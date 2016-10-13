@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>PhenixP2P Test App</title>
+</head>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    var socket = io();
+    $(document).ready(function() {
+        $('#button').click(function () {
+            socket.emit('sound');
+            return false;
+        });
+    });
+
+    socket.on('sound', function (sound) {
+        var source = audioCtx.createBufferSource();
+        audioCtx.decodeAudioData(sound, function(buf) {
+            source.buffer = buf 
+            source.connect(audioCtx.destination);
+            source.start();
+        });
+    });
+</script>
+
+    <body>
+        <button id="button">Play sound on other users</button>
+    </body>
+
+</html>
